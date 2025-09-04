@@ -1,0 +1,29 @@
+const mongoose=require("mongoose")
+const favouriteSchema=new mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        required:true,
+        index:true
+    },
+    recipeId:{
+        type:String,
+        required:true,
+        index:true
+    },
+    recipeName:{
+        type:String,
+        required:true,
+        index:true
+    },
+    thumnail:{
+        type:String
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now(),
+        index:true
+    }
+})
+favouriteSchema.index({userId:1,recipeId:1},{unique:true})
+module.exports=mongoose.model("Favourites",favouriteSchema)
