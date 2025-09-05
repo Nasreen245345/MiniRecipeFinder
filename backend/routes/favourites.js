@@ -3,7 +3,6 @@ const router=express.Router()
 const authMidddleware=require("../middleware/auth")
 const Favourites = require("../models/Favourites")
 router.use(authMidddleware)
-// GET /api/favorites
 router.get('/', async (req, res) => {
   try {
   const userId=req.user.id
@@ -16,20 +15,17 @@ router.get('/', async (req, res) => {
     });
   }
 });
-// /api/favorites
+
 router.post('/',async (req, res) => {
   try {
     const { idMeal, strMeal, strMealThumb, strCategory, strArea,ingredients,instructions } = req.body;
     const userId = req.user.id;
-
-    // ✅ Validation
     if (!idMeal || !strMeal || !strMealThumb) {
       return res.status(400).json({
         message: 'Meal ID, name, and thumbnail are required'
       });
     }
 
-    // ✅ Check if already favorited
     const existingFavorite = await Favourites.findOne({ userId, idMeal });
     if (existingFavorite) {
       return res.status(409).json({
@@ -37,7 +33,7 @@ router.post('/',async (req, res) => {
       });
     }
 
-    // ✅ Create new favorite
+  
     const favorite = new Favourites({
       userId,
       idMeal,
@@ -74,7 +70,6 @@ router.post('/',async (req, res) => {
 });
 
 
-// DELETE /api/favorites/:id
 router.delete('/:id', async (req, res) => {
   try {
     const userId = req.user.id;
