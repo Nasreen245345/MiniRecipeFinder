@@ -21,16 +21,22 @@ const Header = () => {
                 <Link to="/favourites" className="font-bold text-xl">Favourite</Link>
               </li>
               <li
-                className="bg-orange-500 p-2 px-3 text-xl rounded-md text-white font-semibold cursor-pointer hover:bg-orange-600 "
+                className="bg-orange-500 lg:p-2 lg:px-3 md:p-1 md:px-2 text-xl rounded-md text-white font-semibold cursor-pointer hover:bg-orange-600 "
                 onClick={logout}
               >
                 Logout
               </li>
             </>
           ) : (
-            <li className="bg-orange-500 p-2 px-3 rounded-md text-white font-semibold cursor-pointer text-xl hover:bg-orange-600">
-              <Link to="/login" className="font-bold text-xl">Sign In</Link>
+            <div className="flex gap-3">
+                <li className="bg-orange-500 lg:p-2 lg:px-3 md:p-1 md:px-2  rounded-md text-white font-semibold cursor-pointer text-xl hover:bg-orange-600">
+              <Link to="/login" className="font-bold text-xl">Login</Link>
             </li>
+            <li className="bg-orange-500 lg:p-2 lg:px-3 md:p-1 md:px-2  rounded-md text-white font-semibold cursor-pointer text-xl hover:bg-orange-600">
+              <Link to="/signup" className="font-bold text-xl">Sign Up</Link>
+            </li>
+            </div>
+            
           )}
         </ul>
         {/* mobile menu button */}
@@ -49,7 +55,7 @@ const Header = () => {
       {user ? (
        <>
         <Link to="/favourites">Favourites</Link>
-        <button onClick={logout} className=' bg-orange-500 p-1 rounded-md text-center text-white font-semibold cursor-pointer'>Logout</button></>
+        <button onClick={logout} className=' bg-orange-500 sm:p-1 rounded-md text-center text-white font-semibold cursor-pointer'>Logout</button></>
       ) : (
         <Link to="/login" className='bg-orange-500 p-2 cursor-pointer rounded-md'>Sign In</Link>
       )}

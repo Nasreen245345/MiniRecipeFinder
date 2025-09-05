@@ -60,13 +60,13 @@ const Signup = () => {
         onChange={handleChange}
         className=' border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none'
         />
-        <button className='text-center bg-orange-400 rounded-md mt-2 py-2 font-semibold text-sm sm:text-xl' type="submit">
+        <button className='text-white text-center bg-orange-400 rounded-md mt-2 py-2 font-semibold text-sm sm:text-xl' type="submit">
         Submit
       </button>
       </form>
       <div className='text-center mt-2'>
         Already have an account?
-        <button className='text-orange-500 font-semibold' onClick={()=>navigate("/login")}>Login</button>
+        <button className='text-orange-500 font-semibold ' onClick={()=>navigate("/login")}>Login</button>
       </div>
 
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Filter, Search, Star, Clock } from "lucide-react";
+import { Filter, Search, Star, Clock , Trash } from "lucide-react";
 import api from "../services/api"
 import {useAuth} from "../Context/auth"
 import { useRecipe } from "../Context/recipes";
 import { useNavigate } from "react-router-dom";
 const Home = () => {
     const navigate=useNavigate()
+      const {setData}=useRecipe()
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("name-asc");
@@ -19,21 +20,18 @@ const Home = () => {
   const [displayedRecipes, setDisplayedRecipe] = useState([]);
   const [mockRecipes,setmockRecipes]=useState([])
   const {user}=useAuth()
-  const {setData}=useRecipe()
 
   const categories = ['Chicken', 'Beef', 'Pasta', 'Seafood', 'Vegetarian'];
   const areas = ['Indian', 'British', 'Italian', 'Japanese', 'American'];
-  const ingredients = ['Chicken', 'Beef', 'Pasta', 'Rice Noodles', 'Tomato','Pineapple','Parmesan Cheese','Beef Fillet'];
+  const ingredients = ['Chicken', 'Beef', 'Pasta', 'Rice', 'Tomato'];
 
-  const recipesPerPage = 3;
+  const recipesPerPage = 2;
   const fetchData=async ()=>{
 try{
-  const response =await api.get("/public")
-  setData(response.data)
+  const response =await api.get("/favourites")
   setmockRecipes(response.data)
   setAllRecipes(response.data)
   setTotalPages(Math.ceil(response.data.length / recipesPerPage));
-  
   }catch(error){
 console.error(error.response.data.message)
 setmockRecipes(null)
@@ -54,12 +52,12 @@ useEffect(() => {
     setCurrentPage(1);
     setSortBy('name-asc');
   };
+
   const updateDisplayedRecipes = () => {
     const startIndex = (currentPage - 1) * recipesPerPage;
     const endIndex = startIndex + recipesPerPage;
     setDisplayedRecipe(allrecipes.slice(startIndex, endIndex));
   };
-
   const handleSearch = () => {
     setLoading(true);
     
@@ -74,20 +72,19 @@ useEffect(() => {
         recipe.strCategory === selectCategory
       );
     }
-
     if (selectArea) {
       filteredRecipes = filteredRecipes.filter(recipe =>
         recipe.strArea === selectArea
       );
     }
-
     if (selectIngredients) {
-  filteredRecipes = filteredRecipes.filter(recipe =>
-    recipe.ingredients.some(ingredient =>
-      ingredient.toLowerCase().includes(selectIngredients.toLowerCase())
-    )
-  );
-}
+      filteredRecipes = filteredRecipes.filter(recipe =>
+        recipe.ingredients.some(ingredient=>(
+            ingredient.toLowerCase().includes(selectIngredients.toLowerCase())
+        )
+            )
+      );
+    }
     if (sortBy === 'name-asc') {
       filteredRecipes.sort((a, b) => a.strMeal.localeCompare(b.strMeal));
     } else if (sortBy === 'name-desc') {
@@ -105,40 +102,38 @@ useEffect(() => {
     setCurrentPage(1); 
     handleSearch();
   }, [selectArea, selectCategory, searchQuery, selectIngredients, sortBy]);
-     const handleFavourites=async (recipe)=>{
+     const handleDelete=async (recipe)=>{
         if(user){
            try{
-             const response=await api.post("/favourites",recipe)
+             const response=await api.delete(`/favourites/${recipe.idMeal}`)
             if(response.data.success){
-                alert("Recipe added to favourite")
+                alert("Recipe deleted succesfully")
             }
            }catch(error){
-            alert(error.response?.data?.message || error.message)
+                alert(error.response?.data?.message || error.message)
            }
         }
         else{
-            alert("You need to login to mark Favourites")
+            alert("You need to login to delete favourites")
         } 
   }
-  
-const moveToCrard=(recipe)=>{
+  const moveToCrard=(recipe)=>{
     console.log(recipe)
     setData(recipe)
     navigate("/recipeview")
 }
+
   const RecipeCard = ({ recipe }) => (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-95">
-       
       <div className="relative">
         <img
           src={recipe.strMealThumb}
           alt={recipe.strMeal}
           className="w-full h-48 object-cover"
-          
         />
         <div className="absolute top-3 right-3">
-          <button className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-red-50 transition-colors" onClick={(e)=>handleFavourites(recipe)}>
-            <Star className="w-5 h-5 text-gray-400 hover:text-red-500" />
+          <button className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-red-50 transition-colors" onClick={(e)=>handleDelete(recipe)}>
+            <Trash className="w-5 h-5 text-gray-400 hover:text-red-500" />
           </button>
         </div>
         <div className="absolute bottom-3 left-3 flex gap-2">
@@ -194,11 +189,8 @@ const moveToCrard=(recipe)=>{
     <div className="min-h-screen text-center p-6">
       <div className="text-center mb-8">
         <h2 className="text-4xl font-bold text-gray-800 mb-4">
-          Discover Amazing Recipes
+          Your Favourite Recipes
         </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Search through thousands of delicious recipes from around the world
-        </p>
       </div>
       
       <div className="bg-white rounded-xl shadow-md p-6 mb-8">
@@ -322,11 +314,12 @@ const moveToCrard=(recipe)=>{
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && !loading && (
         <div className="flex flex-col justify-center items-center gap-2 flex-wrap">
-            <div>
-                 
+        
+          
+          <div>
+            {/* Page Numbers */}
           {Array.from({ length: totalPages }).map((_, index) => {
             const page = index + 1;
             if (
@@ -341,10 +334,10 @@ const moveToCrard=(recipe)=>{
                   className={`px-4 py-2 rounded-lg ${
                     currentPage === page
                       ? 'bg-orange-500 text-white'
-                      : 'border border-gray-200'
+                      : 'border border-gray-200 hover:bg-gray-50'
                   }`}
                 >
-                  {page} 
+                  {page}
                 </button>
               );
             } else if (
@@ -355,10 +348,10 @@ const moveToCrard=(recipe)=>{
             }
             return null;
           })}
-            </div>
-         
+          </div>
           
-          <span className="text-sm text-gray-500 ml-4 ">
+         
+          <span className="text-sm text-gray-500 ml-4">
             Page {currentPage} of {totalPages}
           </span>
         </div>

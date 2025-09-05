@@ -7,6 +7,8 @@ import Signup from './components/Signup'
 import Verifyemail from './components/VerifyEmail'
 import Header from "./components/common/Header"
 import Home from './components/Home'
+import Favourites from "./components/Favourite"
+import Recipepage from './components/Recipepage'
 function App() {
   return (
     <>
@@ -18,7 +20,9 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
+        <Route path="/favourites" element={<Favourites/>}/>
         <Route path='/verify/:token' element={<Verifyemail/>}/>
+        <Route path="/recipeview" element={<Recipepage/>}/>
       </Routes>
       </Router>
     </>

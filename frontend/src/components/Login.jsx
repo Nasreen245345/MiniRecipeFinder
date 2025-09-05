@@ -9,12 +9,12 @@ const Login = () => {
   const handleSubmit=async (e)=>{
     e.preventDefault()
     try{
-      const res=await api.post("/auth/login",formData,{ headers: { "Content-Type": "application/json" }})
+      const res=await api.post("/auth/login",formData)
       
-      if(res.status===200){
         alert("Login succesful")
         login(res.data.user,res.data.token)
-      }
+        navigate('/')
+
      
     }catch(err){
       console.log(err)
@@ -62,7 +62,7 @@ const Login = () => {
         onChange={handleChange}
         className=' border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none'
         />
-        <button className='text-center bg-orange-500 rounded-md mt-3 py-2 font-semibold text-sm sm:text-xl' type="submit">
+        <button className='text-white text-center bg-orange-500 rounded-md mt-3 py-2 font-semibold text-sm sm:text-xl' type="submit">
         Submit
       </button>
       </form>

@@ -15,10 +15,10 @@ useEffect(() => {
   }
 }, [])
 const login=(userData,userToken)=>{
+  localStorage.setItem("token",userToken)
+localStorage.setItem("user",userData)
 setUser(userData)
 setToken(userToken)
-localStorage.setItem("token",userToken)
-localStorage.setItem("user",userData)
 }
 const logout=()=>{
 setUser(null)
