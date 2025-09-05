@@ -9,8 +9,11 @@ import Header from "./components/common/Header"
 import Home from './components/Home'
 import Favourites from "./components/Favourite"
 import Recipepage from './components/Recipepage'
+import {useAuth} from "./Context/auth.jsx"
 function App() {
+  const {user}=useAuth()
   return (
+    
     <>
   
     <Router>
@@ -20,7 +23,7 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
-        <Route path="/favourites" element={<Favourites/>}/>
+        <Route path="/favourites" element={user?<Favourites/>:"Login to access this page"}/>
         <Route path='/verify/:token' element={<Verifyemail/>}/>
         <Route path="/recipeview" element={<Recipepage/>}/>
       </Routes>

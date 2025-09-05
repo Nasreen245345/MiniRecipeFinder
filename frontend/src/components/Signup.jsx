@@ -33,7 +33,7 @@ const Signup = () => {
     <div className='w-full min-h-screen bg-gray-100 flex items-center justify-center'>
       <div className='w-full bg-[#ffffff] flex flex-col gap-2 p-6 m-20 rounded-lg sm:w-3/4 md:w-1/2 lg:w-1/4'>
       <h1 className='text-center font-bold text-2xl sm:text-3xl md:text-4xl font-inter'>Signup</h1>
-      <div className='text-center mb-3 text-ml'>Welcome backe to receipe</div>
+      <div className='text-center mb-3 text-ml'>Welcome backe to MiniReceipeFinder</div>
       <form className='flex flex-col gap-3' onSubmit={handleSubmit}>
         <label>
             Name
