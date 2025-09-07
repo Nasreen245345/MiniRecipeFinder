@@ -16,8 +16,6 @@ const connectDB=async ()=>{
     }
 }
 connectDB()
-const cors = require("cors");
-
 app.use(cors({
   origin: [
     "https://mini-recipe-finder.vercel.app",                    
