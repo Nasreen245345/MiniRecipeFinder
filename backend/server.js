@@ -16,7 +16,10 @@ const connectDB=async ()=>{
     }
 }
 connectDB()
-app.use(cors())
+app.use(cors({
+  origin: ['https://mini-recipe-finder.vercel.app', 'http://localhost:5173'],
+  credentials: true
+}));
 app.use(express.json())
 app.use("/api/auth",authroutes)
 app.use("/api/public",publicroute)
