@@ -20,6 +20,9 @@ app.use(cors({
   origin: ['https://mini-recipe-finder.vercel.app', 'http://localhost:5173'],
   credentials: true
 }));
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 app.use(express.json())
 app.use("/api/auth",authroutes)
 app.use("/api/public",publicroute)
