@@ -4,11 +4,6 @@ const User=require("../models/User.js")
 const jwt=require("jsonwebtoken")
 const bcrypt=require("bcrypt")
 const transporter=require("../config/email.js")
-//signup route
-router.get("/test", (req, res) => {
-  res.send("Auth routes are connected ✅");
-});
-
 router.post('/signup',async (req,res)=>{
       
     const{name,email,password}=req.body

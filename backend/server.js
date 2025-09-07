@@ -16,10 +16,17 @@ const connectDB=async ()=>{
     }
 }
 connectDB()
+const cors = require("cors");
+
 app.use(cors({
-  origin: ['https://mini-recipe-finder.vercel.app', 'http://localhost:5173'],
+  origin: [
+    "https://mini-recipe-finder.vercel.app",                    
+    "https://mini-recipe-finder-6897obs0g-nasreens-projects-bbb8a391.vercel.app",
+    "http://localhost:5173"                                       
+  ],
   credentials: true
 }));
+
 app.get("/", (req, res) => {
   res.send("API is running");
 });
