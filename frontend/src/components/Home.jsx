@@ -27,17 +27,21 @@ const Home = () => {
 
   const recipesPerPage = 3;
   const fetchData=async ()=>{
+    setLoading(true)
 try{
   const response =await api.get("/public")
   setData(response.data)
   setmockRecipes(response.data)
   setAllRecipes(response.data)
   setTotalPages(Math.ceil(response.data.length / recipesPerPage));
+
   
   }catch(error){
 console.error(error.response.data.message)
 setmockRecipes(null)
 setAllRecipes(null)
+  }finally{
+    setLoading(false)
   }
 
   }
@@ -61,9 +65,8 @@ useEffect(() => {
   };
 
   const handleSearch = () => {
-    setLoading(true);
-    
-    let filteredRecipes = [...mockRecipes];
+  //  setTimeout(()=>{
+ let filteredRecipes = [...mockRecipes];
     if (searchQuery) {
       filteredRecipes = filteredRecipes.filter((recipe) =>
         recipe.strMeal.toLowerCase().includes(searchQuery.toLowerCase())
@@ -96,7 +99,8 @@ useEffect(() => {
 
     setAllRecipes(filteredRecipes);
     setTotalPages(Math.ceil(filteredRecipes.length / recipesPerPage));
-    setLoading(false);
+    console.log(allrecipes)
+  //  },500)
   };
   useEffect(() => {
     updateDisplayedRecipes();
@@ -122,7 +126,6 @@ useEffect(() => {
   }
   
 const moveToCrard=(recipe)=>{
-    console.log(recipe)
     setData(recipe)
     navigate("/recipeview")
 }
