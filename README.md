@@ -23,18 +23,15 @@ A full-stack recipe application where users can search for meals, filter by cate
 ### Favorites (User-Specific)
 - Add recipes to favorites.
 - List, search, sort, and paginate favorites.
-- Prevent duplicate favorites (unique index in DB).
-- Remove favorites instantly from UI.
+- Prevent duplicate favorites.
+- Delete favorites.
 
 ### UX / UI
 - Responsive Tailwind UI.
 - Loading spinners, error messages, empty states.
-- Form validation (frontend + backend).
-- Accessibility support (keyboard navigation, labels).
-
 ### Deployment
 - Frontend: **Vercel**
-- Backend: **Render / Railway**
+- Backend: **Railway**
 
 ---
 
@@ -45,7 +42,7 @@ A full-stack recipe application where users can search for meals, filter by cate
 - **Database:** MongoDB Atlas, Mongoose
 - **Authentication:** JWT
 - **Email:** Nodemailer
-- **Deployment:** Vercel (Frontend), Render/Railway (Backend)
+- **Deployment:** Vercel (Frontend), Railway (Backend)
 
 ---
 ##  Installation
@@ -74,7 +71,7 @@ npm run dev
 ##  Deployment
 
 * **Frontend:** Vercel (set VITE\_API\_BASE\_URL to backend)
-* **Backend:** Render or Railway
+* **Backend:** Railway
 
 ---
 
@@ -92,7 +89,7 @@ npm run dev
 ### Backend
 
 ```
-PORT=8080
+PORT=...
 MONGO_URI=...
 JWT_SECRET=...
 SMTP_HOST=smtp.gmail.com
