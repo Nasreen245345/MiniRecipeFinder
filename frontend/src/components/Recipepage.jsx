@@ -1,10 +1,10 @@
 import React from 'react'
 import { useRecipe } from '../Context/recipes'
 import { useAuth } from '../Context/auth';
-import { Star, Clock} from "lucide-react";
+import { Star, Clock,  Trash } from "lucide-react";
 import api from "../services/api" 
 const Recipepage = () => {
-    const { recipe } = useRecipe()
+    const { recipe,favourites } = useRecipe()
     const {user}=useAuth()
    const handleFavourites=async (recipe)=>{
         if(user){
@@ -21,11 +21,24 @@ const Recipepage = () => {
             alert("You need to login to mark Favourites")
         } 
   }
-  
+  const handleDelete=async (recipe)=>{
+          if(user){
+             try{
+               const response=await api.delete(`/favourites/${recipe.idMeal}`)
+              if(response.data.success){
+                  alert("Recipe deleted succesfully")
+              }
+             }catch(error){
+                  alert(error.response?.data?.message || error.message)
+             }
+          }
+          else{
+              alert("You need to login to delete favourites")
+          } 
+    }
     
     return (
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-            {console.log(recipe)}
             <div className='relative'>
                 <img
                     src={recipe.strMealThumb}
@@ -35,22 +48,37 @@ const Recipepage = () => {
                 <div className='absolute top-4 right-4'>
                     <button 
                         className="bg-white/90 backdrop-blur-sm p-3 rounded-full hover:bg-red-50 transition-colors shadow-md" 
-                        onClick={(e) => handleFavourites(recipe)}
+                        onClick={(e) => (recipe.userId ? handleDelete(recipe) : handleFavourites(recipe))}
                     >
-                        <Star className="w-6 h-6 text-gray-400 hover:text-red-500 transition-colors"/>
+                        
+                        {
+                        recipe.userId ?(
+                                <Trash className="w-5 h-5 text-gray-400 hover:text-red-500 transition-colors"/>
+                        ):(
+                            
+                            recipe.idMeal===favourites?(
+                              <Star className="w-5 h-5 fill-orange-500" />
+                            ) : (
+                              <Star className="w-5 h-5 text-gray-400" />
+                            )
+                        )
+                        }
+                        
+                        
                     </button>
-                </div>
-                
-                <div className="absolute bottom-4 left-4 flex gap-2">
-                    <span className="bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {recipe.strCategory}
-                    </span>
-                    <span className="bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {recipe.strArea}
-                    </span>
                 </div>
             </div>
             <div className="p-6 md:p-8">
+        <div className="flex justify-between mb-4">
+         <div className="flex gap-4">
+          <span className="bg-orange-400 text-white px-4 py-3 rounded-full text-xs flex justify-center items-center">
+            {recipe.strCategory}
+          </span>
+          <span className="bg-orange-400 text-white px-4 py-3 rounded-full text-xs flex justify-center items-center">
+            {recipe.strArea}
+          </span>
+        </div>
+       </div>
                 <div className="mb-6">
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                         {recipe.strMeal}

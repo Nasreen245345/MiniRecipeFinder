@@ -2,6 +2,8 @@ const express=require("express")
 const router=express.Router()
 const authMidddleware=require("../middleware/auth")
 const Favourites = require("../models/Favourites")
+const Public=require("../models/Publicrecipe")
+const upload=require("../middleware/uploadMiddleware")
 router.use(authMidddleware)
 router.get('/', async (req, res) => {
   try {
@@ -46,8 +48,7 @@ router.post('/',async (req, res) => {
     });
 
     await favorite.save();
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: 'Added to favorites',
       data: favorite

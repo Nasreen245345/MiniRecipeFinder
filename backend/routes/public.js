@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const Recipe=require("../models/Public")
+const Recipe=require("../models/Publicrecipe")
 router.get("/",async (req,res)=>{
     try{
         const recipes=await Recipe.find()

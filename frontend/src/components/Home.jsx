@@ -4,6 +4,7 @@ import api from "../services/api"
 import {useAuth} from "../Context/auth"
 import { useRecipe } from "../Context/recipes";
 import { useNavigate } from "react-router-dom";
+
 const Home = () => {
     const navigate=useNavigate()
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,24 +19,57 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [displayedRecipes, setDisplayedRecipe] = useState([]);
   const [mockRecipes,setmockRecipes]=useState([])
+  const [categories,setCategories]=useState([])
+  const [areas,setArea]=useState([])
+  const [favourites,setFavourites]=useState([])
+  const [ingredients,setIngredients]=useState([])
+  const [check,setCheck]=useState(false)
   const {user}=useAuth()
   const {setData}=useRecipe()
-
-  const categories = ['Chicken', 'Beef', 'Pasta', 'Seafood', 'Vegetarian'];
-  const areas = ['Indian', 'British', 'Italian', 'Japanese', 'American'];
-  const ingredients = ['Chicken', 'Beef', 'Pasta', 'Rice Noodles', 'Tomato','Pineapple','Parmesan Cheese','Beef Fillet'];
-
-  const recipesPerPage = 3;
+  const recipesPerPage = 6;
+  var favouritId=[null];
   const fetchData=async ()=>{
     setLoading(true)
 try{
   const response =await api.get("/public")
+  const userid=localStorage.getItem('user')
+  if(userid){
+const response2 =await api.get("/favourites")
+ for(let i=0;i<response2.data.length;i++){
+      favouritId.push(response2.data[i].idMeal)
+    }
+  }
+    
+   
+    setFavourites(favouritId)
   setData(response.data)
   setmockRecipes(response.data)
   setAllRecipes(response.data)
-  setTotalPages(Math.ceil(response.data.length / recipesPerPage));
+  const uniquecategories = [];
+  const uniqueAreas=[]
+  const uniqueIngredients=[]
+  for(let i=0;i<response.data.length;i++){
+     let catagory=response.data[i].strCategory
+     let area=response.data[i].strArea
+     for(let j=0;j<response.data[i].ingredients.length;j++){
+      let ingredient=response.data[i].ingredients[j]
+      if(!uniqueIngredients.includes(ingredient)){
+        uniqueIngredients.push(ingredient)
+      }
 
+     }
+    if(!uniquecategories.includes(catagory)){
+    uniquecategories.push(catagory)
+    }
+    if(!uniqueAreas.includes(area)){
+      uniqueAreas.push(area)
+    }
+  }
   
+  setIngredients(uniqueIngredients)
+  setCategories(uniquecategories)
+  setArea(uniqueAreas)
+  setTotalPages(Math.ceil(response.data.length / recipesPerPage));
   }catch(error){
 console.error(error.response.data.message)
 setmockRecipes(null)
@@ -65,7 +99,6 @@ useEffect(() => {
   };
 
   const handleSearch = () => {
-  //  setTimeout(()=>{
  let filteredRecipes = [...mockRecipes];
     if (searchQuery) {
       filteredRecipes = filteredRecipes.filter((recipe) =>
@@ -83,7 +116,6 @@ useEffect(() => {
         recipe.strArea === selectArea
       );
     }
-
     if (selectIngredients) {
   filteredRecipes = filteredRecipes.filter(recipe =>
     recipe.ingredients.some(ingredient =>
@@ -99,9 +131,13 @@ useEffect(() => {
 
     setAllRecipes(filteredRecipes);
     setTotalPages(Math.ceil(filteredRecipes.length / recipesPerPage));
-    console.log(allrecipes)
-  //  },500)
   };
+  useEffect(() => {
+    fetchData()
+     updateDisplayedRecipes();
+  
+  },[check])
+  
   useEffect(() => {
     updateDisplayedRecipes();
   }, [allrecipes, currentPage]);
@@ -115,6 +151,8 @@ useEffect(() => {
              const response=await api.post("/favourites",recipe)
             if(response.data.success){
                 alert("Recipe added to favourite")
+                setCheck(true)
+  
             }
            }catch(error){
             alert(error.response?.data?.message || error.message)
@@ -125,8 +163,8 @@ useEffect(() => {
         } 
   }
   
-const moveToCrard=(recipe)=>{
-    setData(recipe)
+const moveToCard=(recipe,favourite)=>{
+    setData(recipe,favourite)
     navigate("/recipeview")
 }
   const RecipeCard = ({ recipe }) => (
@@ -141,22 +179,31 @@ const moveToCrard=(recipe)=>{
         />
         <div className="absolute top-3 right-3">
           <button className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-red-50 transition-colors" onClick={(e)=>handleFavourites(recipe)}>
-            <Star className="w-5 h-5 text-gray-400 hover:text-red-500" />
+          <div>
+            {favourites.includes(recipe.idMeal) ? (
+  <Star className="w-5 h-5 fill-orange-500" />
+) : (
+  <Star className="w-5 h-5 text-gray-400" />
+)}
+          </div>
           </button>
         </div>
-        <div className="absolute bottom-3 left-3 flex gap-2">
-          <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs">
+        
+      </div>
+      <div className="p-4 ">
+       <div className="flex justify-between">
+         <div className="flex gap-2">
+          <span className="bg-orange-400 text-white px-3 py-1 rounded-full text-xs flex justify-center items-center">
             {recipe.strCategory}
           </span>
-          <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs">
+          <span className="bg-orange-400 text-white px-3 py-1 rounded-full text-xs flex justify-center items-center">
             {recipe.strArea}
           </span>
         </div>
-      </div>
-      <div className="p-4">
         <h3 className="font-semibold text-lg mb-2 text-gray-800 line-clamp-1">
           {recipe.strMeal}
         </h3>
+       </div>
         <p className="text-gray-600 text-sm line-clamp-2 mb-3">
           {recipe.strInstructions}
         </p>
@@ -167,7 +214,10 @@ const moveToCrard=(recipe)=>{
               <span>30m</span>
             </div>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors" onClick={()=>moveToCrard(recipe)}>
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors" onClick={()=>{
+           const favourite = favourites.find(id => id === recipe.idMeal);
+            moveToCard(recipe,favourite)
+          }}>
             View Recipe
           </button>
         </div>
@@ -296,7 +346,6 @@ const moveToCrard=(recipe)=>{
           </div>
         )}
       </div>
-
       {/* Results */}
       <div className="mb-6 flex justify-between items-center">
         <p className="text-gray-600">
@@ -304,7 +353,6 @@ const moveToCrard=(recipe)=>{
         </p>
        
       </div>
-
       {/* Recipe Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">

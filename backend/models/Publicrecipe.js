@@ -23,6 +23,10 @@ const publicSchema=new mongoose.Schema({
         index:true,
         required:true
      },
+     isFavourite:{
+        type:Boolean,
+        default:false
+     },
      createdAt:{
         type:Date,
         default:Date.now(),

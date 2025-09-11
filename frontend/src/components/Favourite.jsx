@@ -19,18 +19,42 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [displayedRecipes, setDisplayedRecipe] = useState([]);
   const [mockRecipes,setmockRecipes]=useState([])
+  const [categories,setCategories]=useState([])
+    const [areas,setArea]=useState([])
+    const [ingredients,setIngredients]=useState([])
   const {user}=useAuth()
 
-  const categories = ['Chicken', 'Beef', 'Pasta', 'Seafood', 'Vegetarian'];
-  const areas = ['Indian', 'British', 'Italian', 'Japanese', 'American'];
-  const ingredients = ['Chicken', 'Beef', 'Pasta', 'Rice', 'Tomato'];
 
-  const recipesPerPage = 2;
+
+  const recipesPerPage = 4;
   const fetchData=async ()=>{
 try{
   const response =await api.get("/favourites")
   setmockRecipes(response.data)
   setAllRecipes(response.data)
+  const uniquecategories = [];
+  const uniqueAreas=[]
+  const uniqueIngredients=[]
+  for(let i=0;i<response.data.length;i++){
+     let catagory=response.data[i].strCategory
+     let area=response.data[i].strArea
+     for(let j=0;j<response.data[i].ingredients.length;j++){
+      let ingredient=response.data[i].ingredients[j]
+      if(!uniqueIngredients.includes(ingredient)){
+        uniqueIngredients.push(ingredient)
+      }
+
+     }
+    if(!uniquecategories.includes(catagory)){
+    uniquecategories.push(catagory)
+    }
+    if(!uniqueAreas.includes(area)){
+      uniqueAreas.push(area)
+    }
+  }
+  setIngredients(uniqueIngredients)
+  setCategories(uniquecategories)
+  setArea(uniqueAreas)
   setTotalPages(Math.ceil(response.data.length / recipesPerPage));
   }catch(error){
 console.error(error.response.data.message)
@@ -136,19 +160,21 @@ useEffect(() => {
             <Trash className="w-5 h-5 text-gray-400 hover:text-red-500" />
           </button>
         </div>
-        <div className="absolute bottom-3 left-3 flex gap-2">
-          <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs">
+      </div>
+      <div className="p-4">
+        <div className="flex justify-between">
+         <div className="flex gap-2">
+          <span className="bg-orange-400 text-white px-3 py-1 rounded-full text-xs flex justify-center items-center">
             {recipe.strCategory}
           </span>
-          <span className="bg-black/70 text-white px-2 py-1 rounded-full text-xs">
+          <span className="bg-orange-400 text-white px-3 py-1 rounded-full text-xs flex justify-center items-center">
             {recipe.strArea}
           </span>
         </div>
-      </div>
-      <div className="p-4">
         <h3 className="font-semibold text-lg mb-2 text-gray-800 line-clamp-1">
           {recipe.strMeal}
         </h3>
+       </div>
         <p className="text-gray-600 text-sm line-clamp-2 mb-3">
           {recipe.strInstructions}
         </p>

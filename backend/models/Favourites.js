@@ -18,7 +18,7 @@ const favouriteSchema = new mongoose.Schema({
     required: true,
   },
   strMealThumb: {
-    type: String,
+      type: String 
   },
   strCategory: {
     type: String,
