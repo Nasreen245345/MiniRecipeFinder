@@ -29,10 +29,6 @@ A full-stack recipe application where users can search for meals, filter by cate
 ### UX / UI
 - Responsive Tailwind UI.
 - Loading spinners, error messages, empty states.
-### Deployment
-- Frontend: **Vercel**
-- Backend: **Railway**
-
 ---
 
 ##  Tech Stack
