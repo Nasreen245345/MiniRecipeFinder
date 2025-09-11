@@ -3,7 +3,6 @@ const router=express.Router()
 const authMidddleware=require("../middleware/auth")
 const Favourites = require("../models/Favourites")
 const Public=require("../models/Publicrecipe")
-const upload=require("../middleware/uploadMiddleware")
 router.use(authMidddleware)
 router.get('/', async (req, res) => {
   try {
