@@ -1,5 +1,5 @@
 
-# Mini Recipe Finder with Favorites
+# Mini Recipe Finder 
 
 A full-stack recipe application where users can search for meals, filter by category, area, or ingredient, and save their favorite recipes. Built with **React (Vite)**, **Tailwind CSS**, **Node.js**, **Express**,and  **MongoDB**.
 
